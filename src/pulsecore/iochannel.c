@@ -240,6 +240,13 @@ ssize_t pa_iochannel_write(pa_iochannel*io, const void*data, size_t l) {
     return r;
 }
 
+void pa_iochannel_enable_events(pa_iochannel*io) {
+    pa_assert(io);
+
+    io->readable = io->hungup = false;
+    enable_events(io);
+}
+
 ssize_t pa_iochannel_read(pa_iochannel*io, void*data, size_t l) {
     ssize_t r;
 

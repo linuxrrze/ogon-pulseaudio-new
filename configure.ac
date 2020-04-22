@@ -1214,6 +1214,24 @@ AS_IF([test "x$with_soxr" = "xyes" && test "x$HAVE_SOXR" = "x0"],
 AM_CONDITIONAL([HAVE_SOXR], [test "x$HAVE_SOXR" = "x1"])
 AS_IF([test "x$HAVE_SOXR" = "x1"], AC_DEFINE([HAVE_SOXR], 1, [Have soxr]))
 
+#### ogon support (optional) #####
+
+AC_ARG_ENABLE([ogon], AS_HELP_STRING([--disable-ogon],[Disable optional ogon driver]))
+
+AS_IF([test "x$enable_ogon" != "xno"],
+    [
+               PKG_CHECK_MODULES(OGON, [winpr2 freerdp2 freerdp-server2], [HAVE_OGON=1], [HAVE_OGON=0])
+    ],
+    HAVE_OGON=0)
+
+AS_IF([test "x$enable_ogon" = "xyes" && test "x$HAVE_OGON" = "x0"],
+    [AC_MSG_ERROR([*** ogon support not found])],
+    [AC_DEFINE([HAVE_OGON], 1, [Have ogon])])
+
+AC_SUBST(OGON_CFLAGS)
+AC_SUBST(OGON_LIBS)
+AC_SUBST(HAVE_OGON)
+AM_CONDITIONAL([HAVE_OGON], [test "x$HAVE_OGON" = x1])
 
 #### gcov support (optional) #####
 
@@ -1611,6 +1629,7 @@ AS_IF([test "x$HAVE_AVAHI" = "x1"], ENABLE_AVAHI=yes, ENABLE_AVAHI=no)
 AS_IF([test "x$HAVE_JACK" = "x1"], ENABLE_JACK=yes, ENABLE_JACK=no)
 AS_IF([test "x$HAVE_LIBASYNCNS" = "x1"], ENABLE_LIBASYNCNS=yes, ENABLE_LIBASYNCNS=no)
 AS_IF([test "x$HAVE_LIRC" = "x1"], ENABLE_LIRC=yes, ENABLE_LIRC=no)
+AS_IF([test "x$HAVE_OGON" = "x1"], ENABLE_OGON=yes, ENABLE_OGON=no)
 AS_IF([test "x$HAVE_DBUS" = "x1"], ENABLE_DBUS=yes, ENABLE_DBUS=no)
 AS_IF([test "x$HAVE_UDEV" = "x1"], ENABLE_UDEV=yes, ENABLE_UDEV=no)
 AS_IF([test "x$HAVE_SYSTEMD_DAEMON" = "x1"], ENABLE_SYSTEMD_DAEMON=yes, ENABLE_SYSTEMD_DAEMON=no)
@@ -1674,6 +1693,7 @@ echo "
     Enable Jack:                   ${ENABLE_JACK}
     Enable Async DNS:              ${ENABLE_LIBASYNCNS}
     Enable LIRC:                   ${ENABLE_LIRC}
+    Enable ogon:                   ${ENABLE_OGON}
     Enable D-Bus:                  ${ENABLE_DBUS}
       Enable BlueZ 5:              ${ENABLE_BLUEZ_5}
         Enable ofono headsets:     ${ENABLE_BLUEZ_5_OFONO_HEADSET}

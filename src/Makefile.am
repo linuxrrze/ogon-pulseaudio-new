@@ -1332,6 +1332,11 @@ endif
 
 pulselibexec_PROGRAMS =
 
+if HAVE_OGON
+modlibexec_LTLIBRARIES += \
+		module-ogon-sink.la
+endif
+
 if HAVE_ALSA
 modlibexec_LTLIBRARIES += \
 		libalsa-util.la \
@@ -1641,6 +1646,15 @@ module_pipe_source_la_SOURCES = modules/module-pipe-source.c
 module_pipe_source_la_LDFLAGS = $(MODULE_LDFLAGS)
 module_pipe_source_la_LIBADD = $(MODULE_LIBADD)
 module_pipe_source_la_CFLAGS = $(AM_CFLAGS) -DPA_MODULE_NAME=module_pipe_source
+
+# ogon sink
+
+if HAVE_OGON
+module_ogon_sink_la_SOURCES = modules/ogon/ogon-sink.c
+module_ogon_sink_la_CFLAGS = $(AM_CFLAGS) $(OGON_CFLAGS) $(DBUS_CFLAGS) -DPA_MODULE_NAME=module_ogon_sink
+module_ogon_sink_la_LDFLAGS = $(MODULE_LDFLAGS)
+module_ogon_sink_la_LIBADD = $(MODULE_LIBADD) $(OGON_LIBS) $(DBUS_LIBS)
+endif
 
 # Fake sources/sinks
 

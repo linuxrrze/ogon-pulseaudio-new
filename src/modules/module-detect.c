@@ -4,6 +4,7 @@
   Copyright 2006 Lennart Poettering
   Copyright 2006 Pierre Ossman <ossman@cendio.se> for Cendio AB
   Copyright 2006 Diego Pettenò
+  Copyright 2014 David FORT "Hardening" <contact@hardening-consulting.fr>
 
   PulseAudio is free software; you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as published
@@ -114,6 +115,20 @@ static int detect_alsa(pa_core *c, int just_one) {
     fclose(f);
 
     return n;
+}
+#endif
+
+#ifdef HAVE_OGON
+static int detect_ogon(pa_core *c, int just_one) {
+    pa_module *m = NULL;
+    pa_log("trying ogon");
+        if (!getenv("OGON_SID"))
+            return 0;
+
+        if (!pa_module_load(&m, c, "module-ogon-sink", ""))
+            return 0;
+
+        return 1;
 }
 #endif
 
@@ -238,6 +253,9 @@ int pa__init(pa_module*m) {
         goto fail;
     }
 
+#ifdef HAVE_OGON
+    if ((n = detect_ogon(m->core, just_one)) <= 0)
+#endif
 #ifdef HAVE_ALSA
     if ((n = detect_alsa(m->core, just_one)) <= 0)
 #endif

@@ -40,6 +40,7 @@ ifelse(@HAVE_DBUS@, 1, [dnl
 ; realtime-priority = 5
 
 ; exit-idle-time = 20
+exit-idle-time = -1
 ; scache-idle-time = 20
 
 ; dl-search-path = (depends on architecture)

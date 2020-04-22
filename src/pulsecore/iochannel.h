@@ -50,6 +50,7 @@ void pa_iochannel_free(pa_iochannel*io);
  * on error. */
 ssize_t pa_iochannel_write(pa_iochannel*io, const void*data, size_t l);
 ssize_t pa_iochannel_read(pa_iochannel*io, void*data, size_t l);
+void pa_iochannel_enable_events(pa_iochannel*io);
 
 #ifdef HAVE_CREDS
 bool pa_iochannel_creds_supported(pa_iochannel *io);

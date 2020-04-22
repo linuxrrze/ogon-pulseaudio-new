@@ -22,16 +22,16 @@ changequote(`[', `]')dnl Set up m4 quoting
 .fail
 
 ### Automatically restore the volume of streams and devices
-load-module module-device-restore
-load-module module-stream-restore
-load-module module-card-restore
+#load-module module-device-restore
+#load-module module-stream-restore
+#load-module module-card-restore
 
 ### Automatically augment property information from .desktop files
 ### stored in /usr/share/application
 load-module module-augment-properties
 
 ### Should be after module-*-restore but before module-*-detect
-load-module module-switch-on-port-available
+#load-module module-switch-on-port-available
 
 ### Load audio drivers statically
 ### (it's probably better to not load these drivers manually, but instead
@@ -54,43 +54,43 @@ ifelse(@HAVE_MKFIFO@, 1, [dnl
 
 ### Automatically load driver modules depending on the hardware available
 ifelse(@HAVE_UDEV@, 1, [dnl
-.ifexists module-udev-detect@PA_SOEXT@
-load-module module-udev-detect
-.else
-], @HAVE_COREAUDIO@, 1, [dnl
-.ifexists module-coreaudio-detect@PA_SOEXT@
-load-module module-coreaudio-detect
-.else
-], [dnl
-.ifexists module-detect@PA_SOEXT@
+#.ifexists module-udev-detect@PA_SOEXT@
+#load-module module-udev-detect
+#.else
+#], @HAVE_COREAUDIO@, 1, [dnl
+#.ifexists module-coreaudio-detect@PA_SOEXT@
+#load-module module-coreaudio-detect
+#.else
+#], [dnl
+#.ifexists module-detect@PA_SOEXT@
 ])dnl
 ### Use the static hardware detection module (for systems that lack udev support)
-load-module module-detect
-.endif
+#load-module module-detect
+#.endif
 
 ### Automatically connect sink and source if JACK server is present
-.ifexists module-jackdbus-detect@PA_SOEXT@
-.nofail
-load-module module-jackdbus-detect channels=2
-.fail
-.endif
+#.ifexists module-jackdbus-detect@PA_SOEXT@
+#.nofail
+#load-module module-jackdbus-detect channels=2
+#.fail
+#.endif
 
-ifelse(@HAVE_BLUEZ@, 1, [dnl
-### Automatically load driver modules for Bluetooth hardware
-.ifexists module-bluetooth-policy@PA_SOEXT@
-load-module module-bluetooth-policy
-.endif
+#ifelse(@HAVE_BLUEZ@, 1, [dnl
+#### Automatically load driver modules for Bluetooth hardware
+#.ifexists module-bluetooth-policy@PA_SOEXT@
+#load-module module-bluetooth-policy
+#.endif
 
-.ifexists module-bluetooth-discover@PA_SOEXT@
-load-module module-bluetooth-discover
-.endif
-])dnl
+#.ifexists module-bluetooth-discover@PA_SOEXT@
+#load-module module-bluetooth-discover
+#.endif
+#])dnl
 
 ifelse(@HAVE_AF_UNIX@, 1, [dnl
 ### Load several protocols
-.ifexists module-esound-protocol-unix@PA_SOEXT@
-load-module module-esound-protocol-unix
-.endif
+#.ifexists module-esound-protocol-unix@PA_SOEXT@
+#load-module module-esound-protocol-unix
+#.endif
 load-module module-native-protocol-unix
 ])dnl
 
@@ -121,22 +121,22 @@ load-module module-gsettings
 .endif
 ])dnl
 
-ifelse(@HAVE_GCONF@, 1, [dnl
+#ifelse(@HAVE_GCONF@, 1, [dnl
 ### Load additional modules from GConf settings. This can be configured with the paprefs tool.
 ### Please keep in mind that the modules configured by paprefs might conflict with manually
 ### loaded modules.
-.ifexists module-gconf@PA_SOEXT@
-.nofail
-load-module module-gconf
-.fail
-.endif
-])dnl
+#.ifexists module-gconf@PA_SOEXT@
+#.nofail
+#load-module module-gconf
+#.fail
+#.endif
+#])dnl
 
 ### Automatically restore the default sink/source when changed by the user
 ### during runtime
 ### NOTE: This should be loaded as early as possible so that subsequent modules
 ### that look up the default sink/source get the right value
-load-module module-default-device-restore
+#load-module module-default-device-restore
 
 ### Make sure we always have a sink around, even if it is a null sink.
 load-module module-always-sink
@@ -149,12 +149,12 @@ load-module module-suspend-on-idle
 
 ### If autoexit on idle is enabled we want to make sure we only quit
 ### when no local session needs us anymore.
-.ifexists module-console-kit@PA_SOEXT@
-load-module module-console-kit
-.endif
-.ifexists module-systemd-login@PA_SOEXT@
-load-module module-systemd-login
-.endif
+#.ifexists module-console-kit@PA_SOEXT@
+#load-module module-console-kit
+#.endif
+#.ifexists module-systemd-login@PA_SOEXT@
+#load-module module-systemd-login
+#.endif
 
 ### Enable positioned event sounds
 load-module module-position-event-sounds
@@ -168,7 +168,24 @@ load-module module-role-cork
 ### loading modules and rerouting streams.
 load-module module-filter-heuristics
 load-module module-filter-apply
+
+
+.ifexists module-x11-publish@PA_SOEXT@
+.nofail
+load-module module-x11-publish
+.fail
+.endif
 ])dnl
+
+ifelse(@HAVE_OGON@, 1, [dnl
+#### Automatically load driver modules for ogon
+.ifexists module-ogon-sink@PA_SOEXT@
+load-module module-ogon-sink
+.endif
+
+
+])dnl
+
 
 ### Make some devices default
 #set-default-sink output
